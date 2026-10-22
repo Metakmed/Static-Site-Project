@@ -1,4 +1,5 @@
 from enum import Enum
+from shlex import split
 from htmlnode import LeafNode
 
 class TextType(Enum):
@@ -48,3 +49,25 @@ def text_node_to_html_node(text_node: TextNode) -> LeafNode:
             raise Exception("TextType is IMAGE but url is None")
 
     raise Exception("Invalid Text Type: no or incorrect value")
+
+def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type: TextType) -> list[TextNode]:
+    new_nodes = []
+    for node in old_nodes:
+        if node.text_type is TextType.TEXT:
+            split_txt = node.txt.split(delimiter)
+            if len(split_txt) % 2:
+                for i in range(len(split_txt)):
+                    if not i % 2:
+                        if split_txt[i] != "":
+                            node = TextNode(split_txt[i],TextType.TEXT)
+                            new_nodes.append(node)
+                    else:
+                        if split_txt[i] != "":
+                            node = TextNode(split_txt[i], text_type)
+                            new_nodes.append(node)
+            else:
+                raise Exception("Error: invalid markdown syntax")
+
+        else:
+            new_nodes.append(node)
+    return new_nodes
