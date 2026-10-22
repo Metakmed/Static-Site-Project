@@ -129,3 +129,25 @@ def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
 def extract_markdown_links(markdown_text: str):
     result = re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)", markdown_text)
     return result
+
+def text_to_textnodes(markdown_text:str):
+    starting_node = TextNode(markdown_text, TextType.TEXT)
+    starting_list = [starting_node]
+    new_nodes = split_nodes_delimiter(starting_list, "`", TextType.CODE)
+    new_nodes = split_nodes_image(new_nodes)
+    new_nodes = split_nodes_link(new_nodes)
+    new_nodes = split_nodes_delimiter(new_nodes, "**", TextType.BOLD)
+    new_nodes = split_nodes_delimiter(new_nodes, "_", TextType.ITALIC)
+    return new_nodes
+
+def markdown_to_blocks(markdown_text:str):
+    new_blocks = []
+    result = []
+    split_blocks = markdown_text.split("\n\n")
+    for block in split_blocks:
+        stripped_block = block.strip()
+        new_blocks.append(stripped_block)
+    for block in new_blocks:
+        if block:
+            result.append(block)
+    return result
