@@ -1,5 +1,7 @@
 import unittest
+
 from htmlnode import HTMLNode, LeafNode, ParentNode
+
 
 class TestHTMLNode(unittest.TestCase):
     def test_eq(self):
@@ -82,3 +84,6 @@ class TestHTMLNode(unittest.TestCase):
 
         parent3= ParentNode("div", [parent])
         self.assertRaises(ValueError,parent3.to_html)
+
+if __name__ == "__main__":
+    unittest.main()
