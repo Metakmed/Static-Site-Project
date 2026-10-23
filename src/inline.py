@@ -1,6 +1,6 @@
 import re
 
-from textnode import TextNode, TextType, split_nodes_delimiter
+from textnode import IncorrectMarkdownFormat, TextNode, TextType, split_nodes_delimiter
 
 
 def extract_markdown_images(markdown_text: str):
@@ -23,7 +23,7 @@ def split_nodes_image(old_nodes: list[TextNode]) -> list[TextNode]:
                 for image in images:
                     split_txt = current_txt.split(f"![{image[0]}]({image[1]})", 1)
                     if len(split_txt) != 2:
-                        raise Exception("Error: invalid markdown syntax")
+                        raise IncorrectMarkdownFormat("Error: invalid markdown format")
                     if split_txt[0] != "":
                         new_nodes.append(TextNode(split_txt[0], TextType.TEXT))
                     new_nodes.append(TextNode(image[0], TextType.IMAGE, image[1]))
@@ -47,7 +47,7 @@ def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
                 for link in links:
                     split_txt = current_txt.split(f"[{link[0]}]({link[1]})", 1)
                     if len(split_txt) != 2:
-                        raise Exception("Error: invalid markdown syntax")
+                        raise IncorrectMarkdownFormat("Error: invalid markdown format")
                     if split_txt[0] != "":
                         new_nodes.append(TextNode(split_txt[0], TextType.TEXT))
                     new_nodes.append(TextNode(link[0], TextType.LINK, link[1]))

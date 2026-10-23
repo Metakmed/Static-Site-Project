@@ -3,6 +3,15 @@ from enum import Enum
 from htmlnode import LeafNode
 
 
+class MissingURLError(Exception):
+    """Raised when a LINK or IMAGE TextNode is missing a URL."""
+
+class InvalidTextType(Exception):
+    """Raised when given TextType name does not match any known TextType names"""
+
+class IncorrectMarkdownFormat(Exception):
+    """Raised when given markdown_text has no closing delimiter or unreconized format"""
+
 class TextType(Enum):
     TEXT = "some text"
     BOLD = "**bold text**"
@@ -23,7 +32,7 @@ class TextNode:
     def __repr__(self) -> str:
         if self.url is None:
             return f"TextNode({self.txt}, {self.text_type.value}, None)"
-        return f"TextNode({self.txt}, {self.text_type.value}, {self.url.value})"
+        return f"TextNode({self.txt}, {self.text_type.value}, {self.url})"
 
 def text_node_to_html_node(text_node: TextNode) -> LeafNode:
     if text_node.text_type in TextType:
@@ -42,14 +51,14 @@ def text_node_to_html_node(text_node: TextNode) -> LeafNode:
         if text_node.text_type == TextType.LINK:
             if text_node.url:
                 return LeafNode("a", text_node.txt, {"href": text_node.url})
-            raise Exception("TextType is LINK but url is None")
+            raise MissingURLError("TextType is LINK but url is None")
 
         if text_node.text_type == TextType.IMAGE:
             if text_node.url:
                 return LeafNode("img", "", {"src": text_node.url, "alt": text_node.txt})
-            raise Exception("TextType is IMAGE but url is None")
+            raise MissingURLError("TextType is IMAGE but url is None")
 
-    raise Exception("Invalid Text Type: no or incorrect value")
+    raise InvalidTextType("Invalid Text Type: no or incorrect name")
 
 def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type: TextType) -> list[TextNode]:
     new_nodes = []
@@ -67,7 +76,7 @@ def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type: 
                             new_node = TextNode(split_txt[i], text_type)
                             new_nodes.append(new_node)
             else:
-                raise Exception("Error: invalid markdown syntax")
+                raise IncorrectMarkdownFormat("Error: missing closing delimiter")
 
         else:
             new_nodes.append(node)
