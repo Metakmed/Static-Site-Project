@@ -1,13 +1,20 @@
 import re
 
-from textnode import IncorrectMarkdownFormat, TextNode, TextType, split_nodes_delimiter
+from htmlnode import HTMLNode
+from textnode import (
+    IncorrectMarkdownFormat,
+    TextNode,
+    TextType,
+    split_nodes_delimiter,
+    text_node_to_html_node,
+)
 
 
-def extract_markdown_images(markdown_text: str):
+def extract_markdown_images(markdown_text: str)-> list:
     result = re.findall(r"!\[([^\[\]]*)\]\(([^\(\)]*)\)", markdown_text)
     return result
 
-def extract_markdown_links(markdown_text: str):
+def extract_markdown_links(markdown_text: str)-> list:
     result = re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)", markdown_text)
     return result
 
@@ -59,7 +66,7 @@ def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
 
     return new_nodes
 
-def text_to_textnodes(markdown_text:str):
+def text_to_textnodes(markdown_text: str)-> list[TextNode]:
     starting_node = TextNode(markdown_text, TextType.TEXT)
     starting_list = [starting_node]
     new_nodes = split_nodes_delimiter(starting_list, "`", TextType.CODE)
@@ -68,3 +75,10 @@ def text_to_textnodes(markdown_text:str):
     new_nodes = split_nodes_delimiter(new_nodes, "**", TextType.BOLD)
     new_nodes = split_nodes_delimiter(new_nodes, "_", TextType.ITALIC)
     return new_nodes
+
+def text_to_children(block_text:str) -> list[HTMLNode]:
+    block_children: list[HTMLNode] = []
+    text_block = text_to_textnodes(block_text)
+    for line in text_block:
+        block_children.append(text_node_to_html_node(line))
+    return block_children
