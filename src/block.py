@@ -37,7 +37,7 @@ def block_to_block_type(block:str)-> BlockType:
         if re.findall(r"(^#{1,6} .+)",block):
             return BlockType.HEADING
 
-        quote_matches =  re.findall(r"(^> .+|^>[\S]+)", block, re.MULTILINE)
+        quote_matches =  re.findall(r"(^> |^>)", block, re.MULTILINE)
         if len(quote_matches) == total_lines:
             return BlockType.QUOTE
 

@@ -35,7 +35,7 @@ def split_nodes_image(old_nodes: list[TextNode]) -> list[TextNode]:
                         new_nodes.append(TextNode(split_txt[0], TextType.TEXT))
                     new_nodes.append(TextNode(image[0], TextType.IMAGE, image[1]))
                     current_txt = split_txt[1]
-                if current_txt != "":
+                if current_txt != '':
                     new_nodes.append(TextNode(current_txt, TextType.TEXT))
         else:
             new_nodes.append(node)

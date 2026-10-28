@@ -2,6 +2,8 @@ import os
 import shutil
 from pathlib import Path
 
+from generate import generate_page_recursive
+
 
 def validate_paths(source: Path | str, destination: Path | str) -> None:
     source = Path(source).resolve()
@@ -41,5 +43,11 @@ def main():
     path_to_static = project_root / "static"
     validate_paths(path_to_static, path_to_public)
     update_public(path_to_static, path_to_public)
+    destination_path = "public"
+    source_path = "content"
+    template_path = "template.html"
+    generate_page_recursive(source_path, template_path, destination_path)
+
+
 if __name__ == "__main__":
     main()
