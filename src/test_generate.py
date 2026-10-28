@@ -1,6 +1,6 @@
 import unittest
 
-from generate import extract_title
+from main import extract_title
 
 
 class TestGenerate(unittest.TestCase):
