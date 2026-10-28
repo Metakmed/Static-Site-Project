@@ -113,7 +113,7 @@ def generate_page_recursive(source_path, template_path, destination_path):
 
 def main():
     project_root = Path(__file__).resolve().parent.parent
-    path_to_public = project_root / "public"
+    path_to_public = project_root / "docs"
     path_to_static = project_root / "static"
     validate_paths(path_to_static, path_to_public)
     update_public(path_to_static, path_to_public)
